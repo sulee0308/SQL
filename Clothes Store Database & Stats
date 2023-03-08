@@ -1,0 +1,17 @@
+/* Create clothes store database. */
+CREATE TABLE inventory (id INTEGER PRIMARY KEY, name TEXT, quantity INTEGER, color TEXT, price INTEGER);
+
+INSERT INTO inventory VALUES
+(1, "shirts", 10, "blue", 15),
+(2, "pants", 14, "black", 18),
+(3, "shoes", 10, "red", 30),
+(4, "hats", 8, "white", 10);
+
+/* Display database ordered by price. */
+SELECT * FROM inventory ORDER BY price;
+
+/* Show item of which the store has the most. */
+SELECT MAX(quantity) FROM inventory;
+
+/* Show average price of items in store. */
+SELECT AVG(price) FROM inventory;
