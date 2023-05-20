@@ -1,0 +1,65 @@
+/* This code focuses on the use of JOINs. */ 
+
+/* Creates a table that lists the characters' names and occupations. */
+CREATE TABLE characters (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, occupation TEXT);
+INSERT INTO characters (name, occupation) VALUES
+('Barok van Zieks', 'prosecutor'),
+('Ema Skye', 'forensic scientist'),
+('Klavier Gavin', 'prosecutor'),
+('Klint van Zieks', 'prosecutor'),
+('Kristoph Gavin', 'defense attorney'),
+('Lana Skye', 'prosecutor'),
+('Maya Fey', 'spirit medium'),
+('Mia Fey', 'defense attorney');
+
+/*Creates a table that lists the games the characters first appeared in, the year the game was published, and the last known status of the characters. */
+CREATE TABLE games (id INTEGER PRIMARY KEY AUTOINCREMENT, first_appearance TEXT, year INTEGER, last_known_status TEXT);
+INSERT INTO games (first_appearance, year, last_known_status) VALUES
+('The Great Ace Attorney: Adventures', 2015,  'alive'),
+('Phoenix Wright: Ace Attorney', 2001, 'alive'),
+('Apollo Justice: Ace Attorney', 2007, 'alive'),
+('The Great Ace Attorney 2: Resolve', 2017, 'deceased'),
+('Apollo Justice: Ace Attorney', 2007, 'incarcerated'),
+('Phoenix Wright: Ace Attorney', 2001, 'arrested'),
+('Phoenix Wright: Ace Attorney', 2001, 'alive'),
+('Phoenix Wright: Ace Attorney', 2001, 'deceased');
+
+/* Creates a table that shows the characters who are siblings in the same row, represented by their corresponding number from the "characters" table. */
+CREATE TABLE siblings (id INTEGER PRIMARY KEY AUTOINCREMENT, sib1_id INTEGER, sib2_id INTEGER);
+INSERT INTO siblings (sib1_id, sib2_id) VALUES
+(8, 7),
+(6, 2),
+(5, 3),
+(4, 1);
+
+/* Displays each character next to the game they first appeared in and the year the game was published. Sorted by the year game was published in ascending order. */
+SELECT c.name, g.first_appearance, g.year
+FROM characters AS c
+JOIN games AS g
+  ON c.id = g.id
+ORDER BY g.year;
+
+/* Displays the characters who are siblings in the same row, along with their last known status. */
+SELECT cha.name AS older_sibling, ga.last_known_status, ra.name AS younger_sibling, me.last_known_status
+FROM siblings AS s
+JOIN characters AS cha
+  ON cha.id = s.sib1_id
+JOIN characters AS ra
+  ON ra.id = s.sib2_id
+JOIN games AS ga
+  ON ga.id = s.sib1_id
+JOIN games AS me
+  ON me.id = s.sib2_id;
+
+/* Shows the siblings who have or had the same occupation. */
+SELECT cha.name AS older_sibling, ct.occupation, ra.name AS younger_sibling, ers.occupation
+FROM siblings AS s
+JOIN characters AS cha
+  ON cha.id = s.sib1_id
+JOIN characters AS ra
+  ON ra.id = s.sib2_id
+JOIN characters AS ct
+  ON ct.id = s.sib1_id
+JOIN characters AS ers
+  ON ers.id = s.sib2_id
+WHERE ct.occupation = ers.occupation;
