@@ -1,3 +1,5 @@
+/* This code focuses on making basic queries. */
+
 /* Create clothes store database. */
 CREATE TABLE inventory (id INTEGER PRIMARY KEY, name TEXT, quantity INTEGER, color TEXT, price INTEGER);
 
