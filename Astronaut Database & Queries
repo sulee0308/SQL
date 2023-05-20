@@ -1,4 +1,6 @@
-/* Source: https://www.kaggle.com/nasa/astronaut-yearbook */
+/* This code focuses on making more advanced queries.
+Source: https://www.kaggle.com/nasa/astronaut-yearbook */
+
 CREATE TABLE astronauts(
    Name                TEXT PRIMARY KEY,
    Year                INTEGER,
