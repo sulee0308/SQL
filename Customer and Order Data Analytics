@@ -1,0 +1,45 @@
+/* In this code, I am querying a database with multiple tables that contain customer and order data to answer the following questions about the data. */ 
+
+/* How many orders were placed in January? */
+SELECT COUNT(orderID) FROM BIT_DB.JanSales
+WHERE LENGTH(orderID) = 6
+AND orderID <> 'Order ID';
+
+/* How many of those orders were for an iPhone? */
+SELECT COUNT(orderID) FROM BIT_DB.JanSales
+WHERE Product = 'iPhone'
+AND LENGTH(orderID) = 6
+AND orderID <> 'Order ID';
+
+/* Select the customer account numbers for all the orders that were placed in February. */
+SELECT DISTINCT c.acctnum
+FROM BIT_DB.FebSales f
+JOIN BIT_DB.customers c
+ON c.order_id = f.orderID
+WHERE length(f.orderID) = 6
+AND f.orderID <> 'Order ID';
+
+/* Which product was the cheapest one sold in January, and what was the price? */
+SELECT DISTINCT Product, price FROM BIT_DB.JanSales
+ORDER BY price ASC
+LIMIT 1;
+
+/* What is the total revenue for each product sold in January? */
+SELECT Product, SUM(Quantity)*price AS revenue 
+FROM BIT_DB.JanSales
+GROUP BY Product;
+
+/* Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many of each were sold, and what was the total revenue? */
+SELECT Product, SUM(Quantity), SUM(Quantity)*price AS revenue 
+FROM BIT_DB.FebSales
+WHERE Location = '548 Lincoln St, Seattle, WA 98101'
+GROUP BY Product;
+
+/* How many customers ordered more than 2 products at a time in February, and what was the average amount spent for those customers? */
+SELECT COUNT(DISTINCT c.acctnum), AVG(f.Quantity * f.price) 
+FROM BIT_DB.FebSales f
+LEFT JOIN BIT_DB.customers c
+ON c.order_id = f.orderID
+WHERE f.Quantity > 2
+AND LENGTH(orderID) = 6
+AND orderID <> 'Order ID';
