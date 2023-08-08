@@ -32,7 +32,7 @@ GROUP BY Product;
 /* Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many of each were sold, and what was the total revenue? */
 SELECT Product, SUM(Quantity), SUM(Quantity)*price AS revenue 
 FROM BIT_DB.FebSales
-WHERE Location = '548 Lincoln St, Seattle, WA 98101'
+WHERE location = '548 Lincoln St, Seattle, WA 98101'
 GROUP BY Product;
 
 /* How many customers ordered more than 2 products at a time in February, and what was the average amount spent for those customers? */
