@@ -1,12 +1,14 @@
 /* In this code, I am querying a database with multiple tables that contain customer and order data to answer the following questions about the data. */ 
 
 /* How many orders were placed in January? */
-SELECT COUNT(orderID) FROM BIT_DB.JanSales
+SELECT COUNT(orderID) 
+FROM BIT_DB.JanSales
 WHERE LENGTH(orderID) = 6
 AND orderID <> 'Order ID';
 
 /* How many of those orders were for an iPhone? */
-SELECT COUNT(orderID) FROM BIT_DB.JanSales
+SELECT COUNT(orderID) 
+FROM BIT_DB.JanSales
 WHERE Product = 'iPhone'
 AND LENGTH(orderID) = 6
 AND orderID <> 'Order ID';
@@ -14,13 +16,14 @@ AND orderID <> 'Order ID';
 /* Select the customer account numbers for all the orders that were placed in February. */
 SELECT DISTINCT c.acctnum
 FROM BIT_DB.FebSales f
-INNER JOIN BIT_DB.customers c
+JOIN BIT_DB.customers c
 ON c.order_id = f.orderID
 WHERE length(f.orderID) = 6
 AND f.orderID <> 'Order ID';
 
 /* Which product was the cheapest one sold in January, and what was the price? */
-SELECT DISTINCT Product, price FROM BIT_DB.JanSales
+SELECT DISTINCT Product, price 
+FROM BIT_DB.JanSales
 ORDER BY price ASC
 LIMIT 1;
 
