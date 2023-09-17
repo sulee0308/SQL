@@ -1,4 +1,4 @@
-/* For this project, I downloaded data from Kaggle containing the top 50 songs on Spotify in 2021. */
+/* For this analysis, I utilized data downloaded from Kaggle containing statistics about the top 50 songs on Spotify in 2021. */
 
 /* I created a table to insert the data into. */
 CREATE TABLE BIT_DB.Spotifydata 
@@ -21,8 +21,8 @@ tempo decimal(6,3) NOT NULL,
 duration_ms integer NOT NULL,
 time_signature integer NOT NULL);
 
-/* Then I inserted the Spotify data from a .csv file into the table.
-Then, I came up with some questions to explore the data and used the following code to answer the questions. */
+/* Afterwards, I inserted the Spotify data from a .csv file into the table, and came up with some questions to explore the data.
+I used the following code to answer the questions. */
 
 /* How many songs did each artist have in the top 50 songs of 2021? */
 SELECT artist_name, COUNT(track_name)
@@ -53,7 +53,8 @@ WHERE danceability >
     (SELECT AVG(danceability) FROM BIT_DB.Spotifydata);
     
 /* What is the average duration of these songs? */
-SELECT AVG(duration_ms) FROM BIT_DB.Spotifydata;
+SELECT AVG(duration_ms) 
+FROM BIT_DB.Spotifydata;
 
 /* Who are the top 10 artists based on their most popular song? */
 SELECT artist_name, MAX(popularity) FROM BIT_DB.Spotifydata
