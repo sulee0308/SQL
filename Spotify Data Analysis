@@ -21,8 +21,8 @@ tempo decimal(6,3) NOT NULL,
 duration_ms integer NOT NULL,
 time_signature integer NOT NULL);
 
-/* Afterwards, I inserted the Spotify data from a .csv file into the table, and came up with some questions to explore the data.
-I used the following code to answer the questions. */
+/* Afterwards, I inserted the Spotify data from a .csv file into the table.
+Then, I used the following code to answer some questions about the data. */
 
 /* How many songs did each artist have in the top 50 songs of 2021? */
 SELECT artist_name, COUNT(track_name)
@@ -68,3 +68,13 @@ WHERE track_name IN
     (SELECT track_name FROM BIT_DB.Spotifydata
     ORDER BY popularity DESC
     LIMIT 10);
+
+/* Calculate the average popularity for the artists in the Spotify data table.
+Then, for every artist with an average popularity of 90 or above, show their name, their average popularity, and label them as a “Top Star”. */
+WITH avg_pop AS
+    (SELECT artist_name, AVG(popularity) AS avg_popularity
+    FROM Spotifydata
+    GROUP BY artist_name)
+SELECT artist_name, avg_popularity, 'Top Star' AS tag
+FROM avg_pop
+WHERE avg_popularity >= 90;
