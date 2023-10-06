@@ -1,5 +1,4 @@
-/* This code focuses on making more advanced queries.
-Source: https://www.kaggle.com/nasa/astronaut-yearbook */
+/* This analysis utilizes the following data from https://www.kaggle.com/nasa/astronaut-yearbook */
 
 CREATE TABLE astronauts(
    Name                TEXT PRIMARY KEY,
@@ -22,6 +21,7 @@ CREATE TABLE astronauts(
    Death_Date          TEXT, 
    Death_Mission       TEXT
 );
+
 INSERT INTO astronauts(Name,Year,GroupNum,Status,Birth_Date,Birth_Place,Gender,Alma_Mater,Undergraduate_Major,Graduate_Major,Military_Rank,Military_Branch,Space_Flights,Space_Flight_hr,Space_Walks,Space_Walks_hr,Missions,Death_Date,Death_Mission) VALUES ('Joseph M. Acaba',2004,19,'Active','5/17/1967','Inglewood, CA','Male','University of California-Santa Barbara; University of Arizona','Geology','Geology',NULL,NULL,2,3307,2,13,'STS-119 (Discovery), ISS-31/32 (Soyuz)',NULL,NULL);
 INSERT INTO astronauts(Name,Year,GroupNum,Status,Birth_Date,Birth_Place,Gender,Alma_Mater,Undergraduate_Major,Graduate_Major,Military_Rank,Military_Branch,Space_Flights,Space_Flight_hr,Space_Walks,Space_Walks_hr,Missions,Death_Date,Death_Mission) VALUES ('Loren W. Acton',NULL,NULL,'Retired','3/7/1936','Lewiston, MT','Male','Montana State University; University of Colorado','Engineering Physics','Solar Physics',NULL,NULL,1,190,0,0,'STS 51-F (Challenger)',NULL,NULL);
 INSERT INTO astronauts(Name,Year,GroupNum,Status,Birth_Date,Birth_Place,Gender,Alma_Mater,Undergraduate_Major,Graduate_Major,Military_Rank,Military_Branch,Space_Flights,Space_Flight_hr,Space_Walks,Space_Walks_hr,Missions,Death_Date,Death_Mission) VALUES ('James C. Adamson',1984,10,'Retired','3/3/1946','Warsaw, NY','Male','US Military Academy; Princeton University','Engineering','Aerospace Engineering','Colonel','US Army (Retired)',2,334,0,0,'STS-28 (Columbia), STS-43 (Atlantis)',NULL,NULL);
@@ -380,41 +380,42 @@ INSERT INTO astronauts(Name,Year,GroupNum,Status,Birth_Date,Birth_Place,Gender,A
 INSERT INTO astronauts(Name,Year,GroupNum,Status,Birth_Date,Birth_Place,Gender,Alma_Mater,Undergraduate_Major,Graduate_Major,Military_Rank,Military_Branch,Space_Flights,Space_Flight_hr,Space_Walks,Space_Walks_hr,Missions,Death_Date,Death_Mission) VALUES ('John W. Young',1962,2,'Retired','9/24/1930','San Francisco, CA','Male','Georgia Institute of Technology','Aeronautical Engineering',NULL,'Captain','US Navy (Retired)',6,835,3,20,'Gemini 3, Gemini 10, Apollo 10, Apollo 16, STS-1 (Columbia), STS-9 (Columbia)',NULL,NULL);
 INSERT INTO astronauts(Name,Year,GroupNum,Status,Birth_Date,Birth_Place,Gender,Alma_Mater,Undergraduate_Major,Graduate_Major,Military_Rank,Military_Branch,Space_Flights,Space_Flight_hr,Space_Walks,Space_Walks_hr,Missions,Death_Date,Death_Mission) VALUES ('George D. Zamka',1998,17,'Retired','6/29/1962','Jersey City, NJ','Male','US Naval Academy; Florida Institute of Technology','Mathematics','Engineering Management','Colonel','US Marine Corps (Retired)',2,692,0,0,'STS-120 (Discovery), STS-130 (Endeavor)',NULL,NULL);
 
-/* Calculates who went on the most space flights. */
-SELECT Name, MAX(Space_Flights) FROM astronauts;
-
-/*Calculates the average number of days that the astronauts were in space, rounded to the nearest integer. */
-SELECT ROUND(AVG(Space_Flight_hr) / 24) AS avg_days_in_space FROM astronauts;
-
-/* Shows total space walk hours grouped by year if the total was greater than the average number of space walk hours done by all the astronauts in the table. */
-SELECT Year, 
-SUM(Space_Walks_hr) AS total_space_walk_hrs
-FROM astronauts
-GROUP BY Year
-HAVING total_space_walk_hrs > (SELECT AVG(Space_Walks_hr) FROM astronauts);
-
-/* Shows military enlistment status of the astronauts in the data set. */
-SELECT Name,
-CASE
-    WHEN (Status = 'Retired' OR Status = 'Deceased') AND Military_Rank NOT NULL THEN 'veteran'
-    WHEN (Status = 'Active' OR Status = 'Management') AND Military_Rank NOT NULL THEN 'active duty'
-    ELSE 'not enlisted'
-END AS enlistment_status
+/* Calculate who went on the most space flights. */
+SELECT Name, MAX(Space_Flights) 
 FROM astronauts;
 
-/* Shows the number of astronauts within each category of enlistment status, in descending order. */
-SELECT COUNT(*) AS num_of_people,
-CASE
-    WHEN (Status = 'Retired' OR Status = 'Deceased') AND Military_Rank NOT NULL THEN 'veteran'
-    WHEN (Status = 'Active' OR Status = 'Management') AND Military_Rank NOT NULL THEN 'active duty'
-    ELSE 'not enlisted'
-END AS enlistment_status
+/* Calculate the average number of days that the astronauts were in space, rounded to the nearest integer. */
+SELECT ROUND(AVG(Space_Flight_hr) / 24) AS avg_days_in_space 
+FROM astronauts;
+
+/* Show total space walk hours per year if the total was greater than the average number of space walk hours done by all the astronauts in the table. */
+SELECT Year, SUM(Space_Walks_hr) AS total_space_walk_hrs
 FROM astronauts
-GROUP BY enlistment_status
-ORDER BY num_of_people DESC;
+GROUP BY Year
+HAVING total_space_walk_hrs > 
+   (SELECT AVG(Space_Walks_hr) FROM astronauts);
+
+/* Show the military enlistment status of the astronauts in the data set. */
+SELECT Name,
+CASE WHEN Military_Rank IS NULL THEN 'not enlisted'
+   WHEN Military_Rank NOT NULL AND (Status = 'Retired' OR Status = 'Deceased') THEN 'veteran' 
+   ELSE 'active duty'
+   END AS enlistment_status
+FROM astronauts;
+
+/* Shows the number of astronauts within each category of enlistment status. */
+SELECT 
+CASE WHEN Military_Rank IS NULL THEN 'not enlisted'
+   WHEN Military_Rank NOT NULL AND (Status = 'Retired' OR Status = 'Deceased') THEN 'veteran' 
+   ELSE 'active duty'
+   END AS enlistment_status,
+COUNT(*) AS num_of_people
+FROM astronauts
+GROUP BY enlistment_status;
 
 /* Shows number of astronauts that had some kind of engineering as their undergraduate or graduate major and also went on a space walk. */
-SELECT COUNT(*) 
+SELECT COUNT(*) AS num_of_astronauts
 FROM astronauts
-WHERE (Undergraduate_Major LIKE '%Engineering%' OR Graduate_Major LIKE '%Engineering%') 
-AND Space_Walks <> 0;
+WHERE (Undergraduate_Major LIKE '%Engineering%' 
+OR Graduate_Major LIKE '%Engineering%')
+AND Space_Walks > 0;
