@@ -1,4 +1,4 @@
-/* In this code, I am querying a database with multiple tables that contain customer and order data to answer the following questions about the data. */ 
+/* This analysis utilizes a database with multiple tables that contain customer and order data to answer the following questions about the data. */ 
 
 /* How many orders were placed in January? */
 SELECT COUNT(orderID) 
