@@ -58,39 +58,39 @@ VALUES
     ('Company JJ', 'Manufacturing', 370.0, 3100, 1, 20, 12, 7.6),
     ('Company KK', 'Healthcare', 150.2, 3400, 0, 16, 8, 5.3);
 
-/* Shows which company in manufacturing has the highest revenue. */
+/* Which company in manufacturing has the highest revenue? */
 SELECT company_name, MAX(revenue)
 FROM fortune_companies
 WHERE industry IS 'Manufacturing';
 
-/* Shows each industry's total revenue, in order from highest to lowest. */
+/* Show each industry's total revenue, in order from highest to lowest. */
 SELECT industry, SUM(revenue) AS total_rev
 FROM fortune_companies
 GROUP BY industry
 ORDER BY total_rev DESC;
 
-/* Shows industries where the average number of employees is greater than 150000. */
+/* Show the industries where the average number of employees is greater than 150,000. */
 SELECT industry, ROUND(AVG(employees)) AS avg_emps
 FROM fortune_companies
 GROUP BY industry
 HAVING avg_emps > 150000;
 
-/* Shows each industry, the number of companies in each industry, and whether I have any experience in that industry. */
+/* Display each industry, the number of companies in each industry, and whether I have any experience in that industry. */
 SELECT industry, COUNT(*) AS num_of_companies, 
 CASE WHEN industry IN ('Technology', 'Finance', 'Healthcare', 'Financials') THEN 'yes'
   ELSE 'no'
-END AS experience
+  END AS experience
 FROM fortune_companies
 GROUP BY industry;
 
-/* Shows companies that give healthcare benefits and either has at least three weeks of paid time off or average employee tenure is longer than 5 years. */
+/* Show the companies that give healthcare benefits and either has at least three weeks of paid time off or average employee tenure is longer than 5 years. */
 SELECT company_name, healthcare_benefits, paid_time_off_days, avg_employee_tenure
 FROM fortune_companies
 WHERE healthcare_benefits = 1
 AND (paid_time_off_days >= 21
   OR avg_employee_tenure > 5);
 
-/* Shows industries whose average revenue is greater than the average revenue of all the companies. */
+/* Show the industries whose average revenue is greater than the overall average revenue of all the companies. */
 SELECT industry, AVG(revenue) AS avg_rev
 FROM fortune_companies
 GROUP BY industry
