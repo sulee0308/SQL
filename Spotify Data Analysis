@@ -1,6 +1,6 @@
-/* For this analysis, I utilized data downloaded from Kaggle containing statistics about the top 50 songs on Spotify in 2021. */
+/* This analysis utilizes data downloaded from Kaggle containing statistics about the top 50 songs on Spotify in 2021. */
 
-/* I created a table to insert the data into. */
+/* I used the following code to create a table for the Spotify data, then imported the data from a .csv file into the table. */
 CREATE TABLE BIT_DB.Spotifydata 
 (id integer PRIMARY KEY,
 artist_name varchar NOT NULL,
@@ -21,8 +21,7 @@ tempo decimal(6,3) NOT NULL,
 duration_ms integer NOT NULL,
 time_signature integer NOT NULL);
 
-/* Afterwards, I inserted the Spotify data from a .csv file into the table.
-Then, I used the following code to answer some questions about the data. */
+/* Afterwards, I used the following code to answer some questions about the data. */
 
 /* How many songs did each artist have in the top 50 songs of 2021? */
 SELECT artist_name, COUNT(track_name)
