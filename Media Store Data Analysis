@@ -1,0 +1,99 @@
+/* The following analysis utilizes a dataset that represents a digital media store and has tables for artists, albums, media tracks, invoices, invoice items, employees, and customers. */
+
+/* Show the number of customers from each country. */
+SELECT Country, COUNT(CustomerId) AS num_of_customers
+FROM customers
+GROUP BY Country;
+
+/* How many customers are associated with each support rep? */
+SELECT e.FirstName, e.LastName, COUNT(c.CustomerId) AS num_of_customers
+FROM employees e
+JOIN customers c
+ON c.SupportRepId = e.EmployeeId
+GROUP BY c.SupportRepId;
+
+/* Show the name of each album, the artist, and the number of tracks in the album. */
+SELECT al.Title AS album_name, ar.Name AS artist_name, COUNT(t.TrackId) AS num_of_tracks
+FROM albums al
+LEFT JOIN tracks t
+ON t.AlbumId = al.AlbumId
+LEFT JOIN artists ar
+ON al.ArtistId = ar.ArtistId
+GROUP BY album_name
+ORDER BY artist_name;
+
+/* Show unique customers in 2010 that were not from Canada, along with their country. */
+SELECT c.FirstName, c.LastName, c.Country
+FROM customers c
+LEFT JOIN invoices i
+ON c.CustomerId = i.CustomerId
+WHERE c.Country <> 'Canada'
+AND i.InvoiceDate LIKE '2010%'
+GROUP BY c.CustomerId
+ORDER BY c.Country;
+
+/*What was the total amount of revenue made in 2013? */
+SELECT SUM(it.UnitPrice * it.Quantity) AS total_revenue
+FROM invoice_items it
+JOIN invoices inv
+ON it.InvoiceId = inv.InvoiceId
+WHERE inv.InvoiceDate LIKE '2013%';
+
+/* How many invoices were there each year? */
+SELECT STRFTIME('%Y',InvoiceDate) AS inv_year, COUNT(InvoiceId) AS num_of_invs
+FROM invoices
+GROUP BY inv_year;
+
+/*Show the name of each track bought more than once, the number of times it was bought, and the revenue made from the track. */
+SELECT t.Name, SUM(i.Quantity) AS num_bought, SUM(i.UnitPrice * i.Quantity) AS revenue
+FROM invoice_items i
+JOIN tracks t
+ON t.TrackId = i.TrackId
+GROUP BY i.TrackId
+HAVING num_bought > 1;
+
+/* Show each invoice ID, the customer's full name, the number of items they bought, and the total amount they spent. */
+SELECT inv.InvoiceId, c.FirstName, c.LastName, SUM(it.Quantity) AS num_of_items, SUM(it.UnitPrice * it.Quantity) AS total_spent
+FROM invoices inv
+LEFT JOIN customers c
+ON inv.CustomerId = c.CustomerId
+LEFT JOIN invoice_items it
+ON inv.InvoiceId = it.InvoiceId
+GROUP BY it.InvoiceId;
+
+/* Show the employee ID of each manager, their full name and title, and the number of employees that report to them. */
+SELECT DISTINCT e.EmployeeId, e.FirstName, e.LastName, e.Title,
+COUNT(em.EmployeeId) OVER (PARTITION BY em.ReportsTo) AS num_of_emps
+FROM employees e
+JOIN employees em
+ON e.EmployeeId = em.ReportsTo
+WHERE e.Title LIKE '%Manager';
+
+/* Which track(s) sold the most? */
+WITH number_sold AS
+    (SELECT TrackId, SUM(Quantity) AS total_num_sold
+    FROM invoice_items
+    GROUP BY TrackId)
+SELECT t.Name, n.total_num_sold
+FROM tracks t
+JOIN number_sold n
+ON t.TrackId = n.TrackId
+WHERE n.total_num_sold IN
+    (SELECT MAX(total_num_sold)
+    FROM number_sold);
+
+/* Show the name of each support rep, the number of sales they made, and whether they should receive a raise. */
+WITH number_of_sales AS
+    (SELECT c.SupportRepId, COUNT(inv.InvoiceId) AS num_of_sales
+    FROM invoices inv
+    JOIN customers c
+    ON inv.CustomerId = c.CustomerId
+    GROUP BY c.SupportRepId)
+SELECT e.FirstName, e.LastName, n.num_of_sales,
+CASE WHEN n.num_of_sales > (SELECT AVG(num_of_sales) FROM number_of_sales) THEN 'yes'
+    ELSE 'no'
+    END AS give_raise
+FROM employees e
+JOIN number_of_sales n
+ON n.SupportRepId = e.EmployeeId
+GROUP BY n.SupportRepId;
