@@ -417,5 +417,5 @@ GROUP BY enlistment_status;
 SELECT COUNT(*) AS num_of_astronauts
 FROM astronauts
 WHERE (Undergraduate_Major LIKE '%Engineering%' 
-OR Graduate_Major LIKE '%Engineering%')
+   OR Graduate_Major LIKE '%Engineering%')
 AND Space_Walks > 0;
