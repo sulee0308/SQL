@@ -1,4 +1,4 @@
-/* This project uses the following dataset: */ 
+/* This analysis uses the following dataset: */ 
 
 CREATE TABLE characters 
 (id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -43,13 +43,13 @@ INSERT INTO siblings (sib1_id, sib2_id) VALUES
 (5, 3),
 (4, 1);
 
-/* Displays each character's name next to the game they first appeared in and their last known status. */
+/* Display each character's name next to the game they first appeared in and their last known status. */
 SELECT c.name, g.first_appearance, g.last_known_status
 FROM characters c
 JOIN games g
 ON c.id = g.character_id;
 
-/* Displays the number of characters that first appeared in each game, ordered by the year the game was published. */
+/* Display the number of characters that first appeared in each game, ordered by the year the game was published. */
 SELECT g.first_appearance, COUNT(c.name) AS num_of_charas, g.year
 FROM characters c
 JOIN games g
@@ -57,7 +57,7 @@ ON c.id = g.character_id
 GROUP BY g.first_appearance
 ORDER BY g.year;
 
-/* Displays the older sibling next to the younger sibling. */
+/* Display the older sibling next to the younger sibling. */
 SELECT c.name AS older_sibling, ch.name AS younger_sibling
 FROM siblings s
 JOIN characters c
@@ -65,7 +65,7 @@ ON c.id = s.sib1_id
 JOIN characters ch
 ON ch.id = s.sib2_id;
 
-/* Displays the characters who are siblings in the same row, along with their last known status. */
+/* Show the characters who are siblings in the same row, along with their last known status. */
 SELECT c.name AS older_sibling, g.last_known_status, ch.name AS younger_sibling, ga.last_known_status
 FROM siblings s
 JOIN characters c
@@ -77,7 +77,7 @@ ON ch.id = s.sib2_id
 JOIN games ga
 ON ga.character_id = s.sib2_id;
 
-/* Shows the siblings who have or had the same occupation, along with said occupation. */
+/* Show the siblings who have or had the same occupation, along with said occupation. */
 SELECT c.name AS older_sibling, ch.occupation, cha.name AS younger_sibling, char.occupation
 FROM siblings s
 JOIN characters c
