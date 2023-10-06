@@ -388,7 +388,7 @@ FROM astronauts;
 SELECT ROUND(AVG(Space_Flight_hr) / 24) AS avg_days_in_space 
 FROM astronauts;
 
-/* Show total space walk hours per year if the total was greater than the average number of space walk hours done by all the astronauts in the table. */
+/* Show the years in which the total number of space walk hours was greater than the overall average, along with the total space walk hours for that year. */
 SELECT Year, SUM(Space_Walks_hr) AS total_space_walk_hrs
 FROM astronauts
 GROUP BY Year
@@ -403,7 +403,7 @@ CASE WHEN Military_Rank IS NULL THEN 'not enlisted'
    END AS enlistment_status
 FROM astronauts;
 
-/* Shows the number of astronauts within each category of enlistment status. */
+/* Show the number of astronauts within each category of enlistment status. */
 SELECT 
 CASE WHEN Military_Rank IS NULL THEN 'not enlisted'
    WHEN Military_Rank NOT NULL AND (Status = 'Retired' OR Status = 'Deceased') THEN 'veteran' 
@@ -413,7 +413,7 @@ COUNT(*) AS num_of_people
 FROM astronauts
 GROUP BY enlistment_status;
 
-/* Shows number of astronauts that had some kind of engineering as their undergraduate or graduate major and also went on a space walk. */
+/* Show the number of astronauts that had some kind of engineering as their undergraduate or graduate major and also went on a space walk. */
 SELECT COUNT(*) AS num_of_astronauts
 FROM astronauts
 WHERE (Undergraduate_Major LIKE '%Engineering%' 
