@@ -1,6 +1,5 @@
-/* This project focuses on answering basic questions about the data. */
+/* This analysis uses the following data: */
 
-/* This project uses the following data: */
 CREATE TABLE superstore (
     item_id INTEGER PRIMARY KEY,
     item_name TEXT,
@@ -28,17 +27,17 @@ VALUES
     (14, 'Cutlery Set', 'Kitchen Supplies', 34.50, 40, 4.4),
     (15, 'Cozy Throw Blanket', 'Furnishings', 24.99, 100, 4.2);
 
-/* Orders the items by price. */
+/* Order the items by price. */
 SELECT * FROM superstore
 ORDER BY price;
 
-/* Shows the average price of the items in the superstore. */
+/* Show the average price of the items in the superstore. */
 SELECT AVG(price) FROM superstore;
 
-/* Shows the price of the most expensive item in the category 'Kitchen Supplies.' */
+/* Show the price of the most expensive item in the category 'Kitchen Supplies.' */
 SELECT MAX(price) FROM superstore
 WHERE category IS 'Kitchen Supplies';
 
-/* Shows average of the average ratings of the items in the category 'Electronics.' */
+/* Show the average of the ratings of the items in the category 'Electronics.' */
 SELECT AVG(average_rating) FROM superstore
 WHERE category IS 'Electronics';
